@@ -1,5 +1,6 @@
 import sha1 from 'sha1';
 import dbClient from '../utils/db';
+import redisClient from '../utils/redis';
 
 class UsersController {
   static async postNew(req, res) {
@@ -25,6 +26,16 @@ class UsersController {
     } catch (err) {
       console.error('Error adding user:', err);
       return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
+  static getMe(req, res) {
+    const token = req.headers['X-Token'];
+    const logUser = redisClient.get(`auth_${token}`);
+    if (logUser) {
+      res.json({ id: logUser.id, email: logUser.email });
+    } else {
+      res.status(401).json({ error: 'Unauthorized' });
     }
   }
 }
