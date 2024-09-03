@@ -1,6 +1,6 @@
 import express from 'express';
+import process from 'process';
 import router from './routes/index';
-import process from 'process'
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -12,5 +12,5 @@ app.use(router);
 
 // starts ports to run and listen on the specified port
 app.listen(port, () => {
-  console.log("Server running on port 5000");
+  console.log('Server running on port 5000');
 });
