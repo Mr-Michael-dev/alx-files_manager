@@ -29,13 +29,15 @@ class UsersController {
     }
   }
 
-  static getMe(req, res) {
-    const token = req.headers['X-Token'];
-    const logUser = redisClient.get(`auth_${token}`);
-    if (logUser) {
-      res.json({ id: logUser.id, email: logUser.email });
-    } else {
+  static async getMe(req, res) {
+    const token = req.headers['x-token'];
+    const logUser = await redisClient.get(`auth_${token}`);
+    // jsonify the data of logUser to be able to access the object
+    const userData = JSON.parse(logUser);
+    if (!logUser || logUser === undefined) {
       res.status(401).json({ error: 'Unauthorized' });
+    } else {
+      res.status(200).json({ id: userData._id, email: userData.email });
     }
   }
 }
